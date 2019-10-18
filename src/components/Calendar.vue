@@ -2,124 +2,65 @@
   <div class="calendar">
      <div>
          <span>Prev</span>
-         <h1>{{currentMonth}} {{currentYear}}</h1>
+         <h1>{{calendar.currentMonth}} {{calendar.currentYear}}</h1>
          <span>Next</span>
      </div>
      <table>
          <tr>
-             <th>SUN</th>
-             <th>MON</th>
-             <th>TUE</th>
-             <th>WED</th>
-             <th>THUR</th>
-             <th>FRI</th>
-             <th>SAT</th>
+             <th>{{calendar.WEEKENDNAME.SUN.ABV}}</th>
+             <th>{{calendar.WEEKENDNAME.MON.ABV}}</th>
+             <th>{{calendar.WEEKENDNAME.TUE.ABV}}</th>
+             <th>{{calendar.WEEKENDNAME.WED.ABV}}</th>
+             <th>{{calendar.WEEKENDNAME.THUR.ABV}}</th>
+             <th>{{calendar.WEEKENDNAME.FRI.ABV}}</th>
+             <th>{{calendar.WEEKENDNAME.SAT.ABV}}</th>
          </tr>
-         <template v-for="month in calendar">
-            <tr v-for="(row, index) in month"
+            <tr v-for="(week, index) in calendar.month"
                 :key="index"
             >
-            <template  v-for="(day, index) in row">
-            <td v-if="day.date === currentDate && day.type === 'current'"
-                :key="index"
-                :class="day.type"
-                class="today date"
-                @click="selectDate(this)"
-            >
-                {{day.date}}                     
-            </td>
-            <td v-else-if="day.date < currentDate || day.type === 'previous'"
-                :key="index"
-                :class="day.type"
-                class="past date"
-                @click="selectDate"
-            >
-                {{day.date}}
-             </td>
-            <td v-else
-                :key="index"
-                :class="day.type"
-                class="future date"
-                @click="selectDate"
-            >
-                {{day.date}}
-            </td>
-            </template>
-            
-        </tr>
-
-         </template>
-        
+                <td v-for="(day, index) in week"
+                    :key="index"
+                    :class="setDateClass(day.type)"
+                >
+                    {{day.date}}
+                </td>
+            </tr>
+          
      </table> 
   </div>
 </template>
 
 <script>
 
-import CalendarDates from 'calendar-dates';
 import calendar from '../js/calendar.js';
 
+console.log(calendar.WEEKENDNAME)
 console.log(calendar)
-
-const calendarDates = new CalendarDates();
-const today = new Date();
-const date = today.getDate();
-
-
-const test = new calendar
-
-const months = {
-    0: "January",
-    1: "February",
-    2: "March",
-    3: "April",
-    4: "May",
-    5: "June",
-    6: "July",
-    7: "August",
-    8: "September",
-    9: "October",
-    10: "November",
-    11: "December"
-}
 
 export default {
     name: 'Calendar',
     data: function(){
         return {
-            calendar: {
-                currentMonth: null,
-                nextMonth: null
-            },
-            currentMonth: months[today.getMonth()],
-            currentYear: today.getFullYear(),
-            currentDate: date,
-            selectedService: null,
-            selectedStylist: null,
-            selectedDate: null
+            calendar: calendar
         }
     },
     methods: {
         selectDate: function(data) {
             console.log(data.target)
+        },
+        setDateClass: function(type) {
+            switch(type) {
+                case 'previous':
+                    return "past-date"
+              
+                case 'current':
+                    return "current-date"
+                case 'next':
+                    return "future-date"
+                default:
+                    return;
+            }
         }
-    },
-    beforeCreate: function() {
-        
-        // calendarDates.getDates(today)
-        //     .then( (data)=> {
-        //         let temp = [];
-        //         let arr = [];
-        //         for(let i = 0; i < data.length; i++) {
-        //             if(temp.length !== 7) {
-        //                 temp.push(data[i])
-        //             } else {
-        //                 arr.push(temp)
-        //                 temp = []
-        //             }
-        //         }
-        //         this.calendar.currentMonth = arr;
-        //     })
     }
 }
 </script>
@@ -128,11 +69,8 @@ export default {
     .today {
         background: #0099CC;
     }
-    .past {
+    .past-date, .future-date {
         color: #DCDCDC;
-    }
-    .date {
-
     }
     .date:hover {
         cursor: pointer;

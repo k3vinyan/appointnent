@@ -50,15 +50,6 @@
 <script>
 
 import Calendar from './Calendar.vue';
-import calender from '../js/calendar.js';
-
-var today = new Date();
-var dd = String(today.getDate()).padStart(2, '0');
-var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-var yyyy = today.getFullYear();
-
-today = mm + '/' + dd + '/' + yyyy;
-
 
 export default {
     name: 'SearchBar',
@@ -81,7 +72,7 @@ export default {
                 calendar: {
                     may: null
                 },
-                todayDate: today
+                todayDate: "10/11/2019"
             }      
     },
     methods: {

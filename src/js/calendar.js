@@ -1,69 +1,65 @@
-import calendarDates from 'calendar-dates';
+import {currentMonthPromise, nextMonthPromise, thirdMonthPromise, MONTHNAME, WEEKENDNAME } from './calendarUtil.js';
 
 class Calendar {
     constructor() {
-        this.calendar = null;
+        this.month = null;
+        this.todayDate = null;
+        this.currentMonth = null;
+        this.currentYear = null;
+        this.WEEKENDNAME = WEEKENDNAME;
     }
 
     init() {
         this.createCalendar();
+        this.createTodayDate();
     }
 
     createCalendar() {
-        const todayDate = new Date();
-        const currentMonth = new Date(todayDate.getFullYear(), todayDate.getMonth());
-        const nextMonth = new Date(todayDate.getFullYear() + 1, todayDate.getMonth() + 1);
-        const thirdMonth = new Date(todayDate.getFullYear() + 2, todayDate.getMonth() + 2);
-
-        const calendarHelper = new calendarDates();
-        const currentMonthPromise = calendarHelper.getDates(currentMonth);
-        const nextMonthPromise = calendarHelper.getDates(nextMonth);
-        const thirdMonthPromise = calendarHelper.getDates(thirdMonth);
-
+    
         currentMonthPromise.then( (data)=> {
             let temp = [];
             let arr = [];
 
             for(let i = 0; i < data.length; i++) {
                 if(temp.length !== 7) {
-                    temp.push(data)
+                    temp.push(data[i])
                 } else {
                     arr.push(temp)
                     temp = [];
                 }
             }
-            this.calendar = arr;
+            this.month = arr;
         })
 
-        nextMonthPromise.then( (data)=> {
-            let temp = [];
-            let arr = [];
+        // nextMonthPromise.then( (data)=> {
+        //     let temp = [];
+        //     let arr = [];
 
-            for(let i = 0; i < data.length; i++) {
-                if(temp.length !== 7) {
-                    temp.push(data)
-                } else {
-                    arr.push(temp)
-                    temp = [];
-                }
-            }
-            this.calendar = arr;
-        })
+        //     for(let i = 0; i < data.length; i++) {
+        //         if(temp.length !== 7) {
+        //             temp.push(data)
+        //         } else {
+        //             arr.push(temp)
+        //             temp = [];
+        //         }
+        //     }
+        //     this.calendar = arr;
+        // })
 
-        thirdMonthPromise.then( (data)=> {
-            let temp = [];
-            let arr = [];
+        // thirdMonthPromise.then( (data)=> {
+        //     let temp = [];
+        //     let arr = [];
 
-            for(let i = 0; i < data.length; i++) {
-                if(temp.length !== 7) {
-                    temp.push(data)
-                } else {
-                    arr.push(temp)
-                    temp = [];
-                }
-            }
-            this.calendar = arr;
-        })
+        //     for(let i = 0; i < data.length; i++) {
+        //         if(temp.length !== 7) {
+        //             temp.push(data)
+        //         } else {
+        //             arr.push(temp)
+        //             temp = [];
+        //         }
+        //     }
+        //     this.calendar = arr;
+        // })
 
 
         
@@ -73,30 +69,34 @@ class Calendar {
         return this.calendar;
     }
 
-    getTodayDate() {
-        const today = new Date();
+    createTodayDate() {
+        let today = new Date();
         const dd = String(today.getDate()).padStart(2, '0');
         const mm = String(today.getMonth() + 1).padStart(2, '0');
         const yyyy = today.getFullYear();
 
         today = mm + '/' + dd + '/' + yyyy;
 
-        return today;
+
+        this.currentYear = yyyy;
+        this.currentMonth = MONTHNAME[mm - 1]; 
+        this.todayDate = today;
     }
+
+    getTodayDate() {
+        return this.todayDate;
+    }
+
+
+
 
     getUI() {
         return this.UI;
     }
 }
 
-const calendar = new Calendar().init();
-console.log(calendar)
+const calendar = new Calendar();
+calendar.init();
 
-export default { "calendar": calendar };
 
-const test = new Calendar();
-test.createCalendar()
-
-setTimeout(function(){
-    console.log(test.getCalendar())
-}, 300)
+export default calendar;
